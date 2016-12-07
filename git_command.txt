@@ -1,0 +1,94 @@
+﻿$ git config --global user.name "Your Name"		            #配置用户名
+$ git config --global user.email "email@example.com"		#配置邮箱
+$ ssh-keygen -t rsa -C "youremail@example.com" #创建SSH KEY.在用户主目录里找到.ssh目录，里面有id_rsa和id_rsa.pub
+                                #两个文件，这两个就是SSH Key的秘钥对id_rsa是私钥，不能泄露出去，id_rsa.pub是公钥，
+				#可以放心地告诉任何人。
+$ git clone git@server:/srv/reponame.git		#通过git clone命令克隆远程仓库，并在本地默认创建master分支
+
+$ git add file                 #把文件添加到本地仓库暂存区
+$ git commit -m "content"      #提交暂存区的文件到本地仓库并注释内容
+$ git status                   #查看结果，该命令可以让我们时刻掌握仓库当前的状态
+$ git diff 			           #查看内容改变,建议使用GUI查看
+$ git log --pretty=oneline     #查看提交历史记录，可以看到commit.id(提交的版本号)，以便确定回退到哪个版本
+$ git reset --hard commit.id   #回到指定版本
+$ git reset --hard HEAD^       #回到上一个版本，HEAD表示当前版本
+$ cat file                     #查看版本内容
+$ git reflog                   #如果回退到之前的版本后，命令窗口被关闭了，再用git log 没办法查看到未来版本的id，
+							   #可以用该命令，查看命令历史，确定穿梭到未来
+git checkout -- file           #丢弃工作区的修改
+$ git reset HEAD file          #该命令可以回退版本，也可以把暂存区的修改回退到工作区。当我们用HEAD时，表示最新的版本
+$ git checkout -b branchname   #创建并切换分支
+$ git rm file                  #删除版本库中的该文件
+#分支管理：
+$ git branch dev               #创建分支dev
+$ git checkout  branchname     #切换branchname分支
+$ git checkout -b dev          #创建分支dev并切换到该分支
+$ git branch -d dev            #删除分支dev
+$ git branch -D dev            #强行还没有合并的分支删除分支
+$ git branch                   #列出本地存在的分支，并在当前分支前面加*
+git branch -r                  #列出远程分支
+git branch -a                  #列出本地分支和远程分支
+$ git log --graph --pretty=oneline --abbrev-commit #查看分支合并图
+$ git merge <name>             #合并指定分支<name>到当前分支，默认Fast forward模式，删除分支后可能会丢失分支信息
+$ git merge --no-ff -m "content" dev #--no-ff禁用Fast forward模式,加—m把commit描述内容写上
+$ git stash                    #把当前工作现场保存起来，等恢复现场后继续工作
+$ git stash list                 #查看工作现场
+$ git stash pop                #回到工作现场并删除stash内容
+$ git remote                   #查看远程库信息 
+$ git remote -v                #显示更详细的信息
+$ git checkout -b branch-name origin/branch-name #基于远程分支创建本地分支,名字最好与远程分支名字一致
+git checkout -t origin/branch-name #基于远程分支创建本地分支,名字与远程分支的名字一致
+$ git push origin master（dev）  #从本地推送分支
+$ git pull                       #抓取远程新提交
+$ git branch --set-upstream branch-name origin/branch-name #建立远程分支与本地分支的关联
+git push origin branch-name ： branch-name#推送本地分支branch-name作为远程分支
+git push origin :branch-name   #删除远程分支，冒号与origin之间隔了一个空格
+$ git tag <name>               #默认标签是打在最新提交的commit上的。
+$ git reset --hard tag         #获取不同时间的文件 
+$ git tag -d <name>            #删除标签
+$ git push origin v1.0         #推送标签到远程
+$ git push origin --tags       #一次性推送全部未推送的标签
+删除推送后的远程标签1.要先删除本地标签$ git tag -d v0.9  再删除远程标签$ git push origin :refs/tags/v0.9
+.gitignore用来忽略特殊文件
+$ git add -f App.class         强制添加忽略文件
+$ git config --global alias.st status 配置别名（例子给status配置别名为st）
+搭建git服务器:
+    搭建Git服务器需要准备一台运行Linux的机器，可以用Ubuntu（或Debian），
+	1创建拥有sudo权限的用户账号、
+	2$ sudo apt-get install git					安装 git									 
+	3$ sudo adduser git						创建一个git用户，用来运行git服务：         
+	4创建证书登录：收集所有需要登录的用户的公钥，就是他们自己的id_rsa.pub文件，把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。
+	5$ sudo git init --bare sample.git           初始化Git仓库：先选定一个目录作为Git仓库，假定是/srv/sample.git，
+	在/srv目录下输入命令创建一个裸仓库，裸仓库没有工作区：
+	6禁用shell登录：若是第3步创建的git用户不允许登录shell，这可以通过编辑/etc/passwd文件完成，找到类似这样的一句话：
+	git:x:1001:1001:,,,:/home/git:/bin/bash
+	将该句话改为：
+	git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell  
+	
+	
+	
+git clone默认会把远程仓库整个给clone下来;
+但只会在本地默认创建一个master分支
+如果远程还有其他的分支，此时用git branch -a查看所有分支：
+
+* master   
+remotes/origin/HEAD -> origin/master   " A4 u3 ~+ n5 u5 \7 R" Z( d# J
+remotes/origin/master   
+remotes/origin/python_mail.skin   
+remotes/origin/udisk   
+remotes/origin/vip
+复制代码
+能看到远程的所有的分支，如remotes/origin/python_mail.skin  e  Y' X9 ~, f1 |
+可以使用checkout命令来把远程分支取到本地，并自动建立tracking
+
+$ git checkout -b python_mail.skin origin/python_mail.skin) X& X: I3 Q; ?9 j9 T5 @; J/ M
+Branch python_mail.skin set up to track remote branch python_mail.skin from origin.; i/ B! ^3 J# u6 a( }. I$ M- i
+Switched to a new branch 'python_mail.skin'
+复制代码
+
+或者使用-t参数，它默认会在本地建立一个和远程分支名字一样的分支
+折叠展开复制代码
+$ git checkout -t origin/python_mail.skin
+复制代码
+也可以使用fetch来做：
+$ git fetch origin python_mail.skin:python_mail.skin
