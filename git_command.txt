@@ -52,9 +52,10 @@ $ git push origin --tags       #一次性推送全部未推送的标签
 .gitignore用来忽略特殊文件
 $ git add -f App.class         强制添加忽略文件
 $ git config --global alias.st status 配置别名（例子给status配置别名为st）
+
 搭建git服务器:
     搭建Git服务器需要准备一台运行Linux的机器，可以用Ubuntu（或Debian），
-	1创建拥有sudo权限的用户账号、
+	1创建拥有sudo权限的用户账号、useradd test | gpasswd -add test  admin|pass test|su test |cd / |mkedir test | sudo mkdir test 
 	2$ sudo apt-get install git					安装 git									 
 	3$ sudo adduser git						创建一个git用户，用来运行git服务：         
 	4创建证书登录：收集所有需要登录的用户的公钥，就是他们自己的id_rsa.pub文件，把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。
